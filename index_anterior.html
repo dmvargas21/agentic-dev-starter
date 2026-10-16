@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Línea de Tiempo: De ChatGPT al Ingeniero Aumentado (2022 – 2026)</title>
+<style>
+:root{
+  --paper:#F4F6F8;
+  --paper-2:#E7ECF1;
+  --ink:#12171E;
+  --ink-2:#586374;
+  --rule:#CBD4DD;
+  --rule-2:#AEB9C4;
+  --redline:#C43D2F;
+  --hit:#3557A8;
+  --tool:#1C7A72;
+  --job:#B4762A;
+  --paradigm:#7A4E8C;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --mono:"Cascadia Mono",Consolas,"SF Mono",ui-monospace,Menlo,monospace;
+  --rail:8rem;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif);
+  font-size:1.0625rem;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:rgba(196,61,47,.16);}
+
+a{
+  color:var(--ink);text-decoration:none;
+  border-bottom:1px solid var(--rule-2);
+  transition:color .15s ease,border-color .15s ease;
+}
+a:hover{color:var(--redline);border-bottom-color:var(--redline);}
+:focus-visible{outline:2px solid var(--redline);outline-offset:3px;}
+
+.wrap{max-width:46rem;margin:0 auto;padding:0 1.5rem;}
+
+/* ---------- MASTHEAD ---------- */
+header.hero{padding:4.5rem 0 2.5rem;border-bottom:1px solid var(--rule-2);}
+.badge{
+  display:block;
+  font-family:var(--mono);font-size:.78rem;font-weight:400;
+  letter-spacing:0;text-transform:none;color:var(--ink-2);
+  border:0;background:none;padding:0;margin:0 0 1.4rem;border-radius:0;
+}
+h1{
+  font-size:clamp(2rem,5vw,3.1rem);line-height:1.08;margin:0 0 1.1rem;
+  font-weight:700;letter-spacing:-.015em;color:var(--ink);
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;
+}
+.hero p.lead{font-size:1.18rem;color:var(--ink-2);margin:0;max-width:33rem;}
+.hero .meta{
+  margin:1.7rem 0 0;padding-top:1rem;border-top:1px solid var(--rule);
+  color:var(--ink-2);font-family:var(--mono);font-size:.78rem;max-width:33rem;
+}
+
+/* ---------- NAV ---------- */
+nav.toc{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule);}
+nav.toc .wrap{display:flex;flex-wrap:wrap;gap:1.1rem;padding-top:.65rem;padding-bottom:.65rem;}
+nav.toc a{font-family:var(--mono);font-size:.76rem;color:var(--ink-2);border-bottom:1px solid transparent;}
+nav.toc a:hover{color:var(--redline);border-bottom-color:var(--redline);}
+
+/* ---------- SECTIONS ---------- */
+main{max-width:46rem;margin:0 auto;padding:0 1.5rem 4rem;}
+section{padding-top:3.25rem;}
+section[id]{scroll-margin-top:3.2rem;}
+section + section{border-top:1px solid var(--rule);}
+.section-title{font-size:1.6rem;line-height:1.2;margin:0 0 .5rem;font-weight:700;letter-spacing:-.01em;}
+.section-sub{color:var(--ink-2);margin:0 0 2rem;max-width:33rem;}
+
+/* ---------- LEYENDA ---------- */
+.legend{display:flex;flex-wrap:wrap;gap:1.4rem;margin:0 0 2rem;}
+.legend span{display:inline-flex;align-items:center;gap:.5rem;color:var(--ink-2);font-family:var(--mono);font-size:.76rem;}
+.dot{width:.68rem;height:.68rem;border-radius:50%;display:inline-block;}
+.dot.hit{background:var(--hit);}
+.dot.tool{background:var(--tool);}
+.dot.job{background:var(--job);}
+.dot.paradigm{background:var(--paradigm);}
+
+/* ---------- TIMELINE (left rail = measuring axis) ---------- */
+.timeline{position:relative;margin:0;}
+.timeline::before{
+  content:"";position:absolute;left:var(--rail);top:0;bottom:0;width:1px;
+  background:var(--rule-2);transform-origin:top;
+  animation:axisGrow .9s cubic-bezier(.22,.7,.25,1) both;
+}
+@keyframes axisGrow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+
+.year{width:var(--rail);padding:1.7rem 1.25rem 0 0;text-align:right;}
+.year .epoch-year{display:block;font-family:var(--mono);font-size:.95rem;font-weight:600;color:var(--ink);}
+.year .epoch-sub{display:block;margin-top:.1rem;font-size:.78rem;color:var(--ink-2);}
+
+.item{
+  position:relative;margin-left:var(--rail);
+  padding:1.2rem 0 1.7rem 1.75rem;border-top:1px solid var(--rule);
+}
+.item .node{
+  position:absolute;top:1.55rem;left:-6px;width:12px;height:12px;border-radius:50%;
+  background:var(--paper);border:2px solid var(--rule-2);z-index:2;
+}
+.item.hit .node{border-color:var(--hit);}
+.item.tool .node{border-color:var(--tool);}
+.item.job .node{border-color:var(--job);}
+.item.paradigm .node{border-color:var(--paradigm);}
+
+.card{display:block;}
+.card .date{display:block;margin:0 0 .35rem;font-family:var(--mono);font-size:.74rem;color:var(--ink-2);}
+.card h3{margin:0 0 .4rem;font-size:1.12rem;line-height:1.3;font-weight:700;color:var(--ink);}
+.card p{margin:0;max-width:33rem;color:var(--ink);}
+.card .tag{display:inline-block;margin-top:.65rem;font-family:var(--mono);font-size:.7rem;color:var(--ink-2);}
+
+/* ---------- CALLOUTS (redline notes) ---------- */
+.callout{
+  max-width:33rem;margin:1.7rem 0;padding:.1rem 0 .1rem 1.15rem;
+  border-left:2px solid var(--redline);background:none;border-radius:0;color:var(--ink);
+}
+.callout .note-label{display:block;margin-bottom:.35rem;font-family:var(--mono);font-size:.72rem;color:var(--redline);}
+.callout.warn{border-left-color:var(--redline);background:none;}
+
+/* ---------- CIFRAS ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:0 2.2rem;margin:0;border-top:1px solid var(--rule-2);}
+.stat{padding:1.1rem 0 1.2rem;border-bottom:1px solid var(--rule);}
+.stat .num{
+  font-family:var(--mono);font-size:1.55rem;font-weight:600;letter-spacing:-.01em;color:var(--ink);
+  background:none;-webkit-background-clip:border-box;background-clip:border-box;
+}
+.stat .lbl{margin-top:.25rem;color:var(--ink-2);font-size:.88rem;}
+
+/* ---------- HABILIDADES / RIESGOS ---------- */
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:2rem;margin:0;}
+.skill h4{margin:0 0 .7rem;font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--ink-2);}
+.skill ul{margin:0;padding-left:1.1rem;color:var(--ink);font-size:1rem;}
+.skill li{margin:.4rem 0;}
+
+/* ---------- ANTES VS AHORA ---------- */
+.compare{overflow-x:auto;border-top:1px solid var(--rule-2);border-bottom:1px solid var(--rule-2);}
+table{width:100%;border-collapse:collapse;min-width:38rem;}
+thead th{
+  padding:.75rem 1rem .75rem 0;text-align:left;font-family:var(--mono);
+  font-size:.74rem;font-weight:600;color:var(--ink-2);border-bottom:1px solid var(--rule-2);
+}
+tbody td{padding:.85rem 1rem .85rem 0;border-bottom:1px solid var(--rule);font-size:.95rem;color:var(--ink);vertical-align:top;}
+tbody tr:last-child td{border-bottom:none;}
+td.dim{color:var(--ink-2);}
+.now{color:var(--ink);font-weight:600;}
+thead th:last-child,tbody td:last-child{padding-right:0;}
+
+footer{
+  margin-top:3.5rem;padding:1.6rem 1.5rem;border-top:1px solid var(--rule-2);
+  text-align:center;color:var(--ink-2);font-family:var(--mono);font-size:.74rem;line-height:1.8;background:none;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width:760px){
+  :root{--rail:3.6rem;}
+  .wrap{padding:0 1.1rem;}
+  main{padding:0 1.1rem 3.5rem;}
+  header.hero{padding-top:3rem;}
+  .hero p.lead,.hero .meta,.section-sub,.card p,.callout{max-width:none;}
+  nav.toc .wrap{gap:.9rem;}
+  .year{padding-right:.7rem;}
+  .year .epoch-year{font-size:.82rem;}
+  .year .epoch-sub{display:none;}
+  .item{padding-left:1.15rem;}
+}
+@media (prefers-reduced-motion:reduce){
+  .timeline::before{animation:none;transform:none;}
+  html{scroll-behavior:auto;}
+  a{transition:none;}
+}
+
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badge">Impacto de la IA en el desarrollo de software, 2022-2026</div>
+    <h1>De ChatGPT al ingeniero aumentado</h1>
+    <p class="lead">Cómo la inteligencia artificial generativa transformó el trabajo del desarrollador y del ingeniero de sistemas: de escribir cada línea de código a <strong>orquestar agentes</strong>. Una línea de tiempo desde el 30 de noviembre de 2022 hasta hoy.</p>
+    <div class="meta">Actualizado el 13 de octubre de 2026. Documento vivo.</div>
+    <div class="legend">
+      <span><i class="dot hit"></i> Hito técnico</span>
+      <span><i class="dot tool"></i> Herramienta</span>
+      <span><i class="dot job"></i> Impacto laboral</span>
+      <span><i class="dot paradigm"></i> Nuevo paradigma</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#inicio">Inicio</a>
+    <a href="#tiempo">Línea de tiempo</a>
+    <a href="#antes-ahora">Antes vs. Ahora</a>
+    <a href="#datos">Cifras</a>
+    <a href="#habilidades">Nuevas habilidades</a>
+    <a href="#riesgos">Riesgos</a>
+    <a href="#futuro">El rol en 2026</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ============ INICIO ============ -->
+  <section id="inicio">
+    <h2 class="section-title">El punto de partida</h2>
+    <p class="section-sub">Antes de noviembre de 2022, la IA en el desarrollo era puntual: autocompletado, análisis estático, scripts de CI/CD. La irrupción de ChatGPT puso un modelo de lenguaje conversacional —capaz de escribir y explicar código— al alcance de cualquiera. En menos de cuatro años, pasó de ser una curiosidad a definir cómo se construye el software.</p>
+    <div class="callout">
+      <span class="note-label">Idea central</span> la IA no reemplazó al desarrollador ni al ingeniero de sistemas. Cambió <em>qué</em> hace y <em>dónde</em> aporta valor: menos escribir código repetitivo, más diseñar sistemas, revisar, integrar, y responsabilizarse por la calidad y la seguridad de lo que la IA produce.
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE ============ -->
+  <section id="tiempo">
+    <h2 class="section-title">Línea de tiempo</h2>
+    <p class="section-sub">Hitos clave desde el lanzamiento de ChatGPT hasta hoy. Los hechos de 2026 se actualizan constantemente: el ritmo de lanzamientos de modelos y agentes es semanal.</p>
+
+    <div class="timeline" id="timeline">
+
+      <!-- ================= 2022 ================= -->
+      <div class="year"><span class="epoch-year">2022</span><span class="epoch-sub">La chispa</span></div>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">30 nov 2022</span>
+          <h3>Lanzamiento de ChatGPT</h3>
+          <p>OpenAI publica ChatGPT basado en GPT-3.5. En su primera semana supera el millón de usuarios. Por primera vez el gran público —y miles de desarrolladores— pueden generar y depurar código conversando.</p>
+          <span class="tag">Hito fundacional</span>
+        </div>
+      </article>
+
+      <article class="item job">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">dic 2022</span>
+          <h3>Stack Overflow reacciona</h3>
+          <p>La comunidad prohíbe temporalmente respuestas generadas por ChatGPT por su alta tasa de errores plausibles. Nace el debate sobre calidad, verificación y confianza en el código generado.</p>
+          <span class="tag">Impacto en la comunidad</span>
+        </div>
+      </article>
+
+      <!-- ================= 2023 ================= -->
+      <div class="year"><span class="epoch-year">2023</span><span class="epoch-sub">La adopción</span></div>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">23 ene 2023</span>
+          <h3>100 millones de usuarios en 2 meses</h3>
+          <p>ChatGPT se convierte en la aplicación de consumo de más rápido crecimiento de la historia. GitHub Copilot (GA desde 2022) acelera la percepción de que la IA escribe código "de verdad".</p>
+          <span class="tag">Adopción masiva</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">14 mar 2023</span>
+          <h3>GPT-4</h3>
+          <p>Salto notable de razonamiento y capacidad de código. Mejora en exámenes profesionales y en resolución de problemas complejos. Se vuelve el motor de asistentes de programación.</p>
+          <span class="tag">Capacidad</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">22 mar 2023</span>
+          <h3>GitHub Copilot X</h3>
+          <p>Copilot Chat llega al IDE, junto a soporte de pull requests, documentación y CLI. El asistente deja de ser solo autocompletado y empieza a integrarse en todo el flujo de trabajo.</p>
+          <span class="tag">Herramienta en el IDE</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">jul 2023</span>
+          <h3>Llama 2 y Code Llama</h3>
+          <p>Meta libera modelos abiertos y una variante especializada en código. Se habilita el autoalojamiento y la personalización: la IA deja de depender solo de la nube de un proveedor.</p>
+          <span class="tag">Modelos abiertos</span>
+        </div>
+      </article>
+
+      <article class="item paradigm">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">6 nov 2023</span>
+          <h3>OpenAI DevDay: GPT-4 Turbo y "GPTs"</h3>
+          <p>Ventana de contexto ampliada, generación de JSON, GPTs personalizados y Assistants API. Los desarrolladores empiezan a <strong>construir sobre</strong> los modelos, no solo a usarlos.</p>
+          <span class="tag">Plataforma para developers</span>
+        </div>
+      </article>
+
+      <article class="item job">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">2023</span>
+          <h3>Primeros temores y ajustes en el mercado</h3>
+          <p>Cae el tráfico a Stack Overflow, se discute el impacto en perfiles junior y muchas empresas de tecnología ajustan plantillas. Simultáneamente, se dispara la demanda de perfiles de IA/ML.</p>
+          <span class="tag">Mercado laboral</span>
+        </div>
+      </article>
+
+      <!-- ================= 2024 ================= -->
+      <div class="year"><span class="epoch-year">2024</span><span class="epoch-sub">Del asistente al agente</span></div>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">feb 2024</span>
+          <h3>Ventanas de contexto gigantes (Gemini 1.5)</h3>
+          <p>Aparecen modelos capaces de "leer" bases de código enteras de una sola vez (hasta 1M de tokens). El contexto pasa a ser un recurso de arquitectura, no solo un límite técnico.</p>
+          <span class="tag">Contexto masivo</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">4 mar 2024</span>
+          <h3>Claude 3 (Opus / Sonnet / Haiku)</h3>
+          <p>Anthropic entra fuerte en el código. La competencia entre proveedores se acelera y los desarrolladores ganan opciones, precios y calidad.</p>
+          <span class="tag">Competencia</span>
+        </div>
+      </article>
+
+      <article class="item paradigm">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">12 mar 2024</span>
+          <h3>Devin: "el primer ingeniero de software de IA"</h3>
+          <p>Se presenta un agente autónomo capaz de planificar, escribir, ejecutar y depurar en una terminal. Marca simbólicamente el paso de "sugerir código" a "ejecutar tareas".</p>
+          <span class="tag">Agentes autónomos</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">13 may 2024</span>
+          <h3>GPT-4o</h3>
+          <p>Interacción multimodal en tiempo real (texto, voz, visión). La IA se vuelve más natural de usar dentro del trabajo diario del ingeniero.</p>
+          <span class="tag">Multimodalidad</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">jun 2024</span>
+          <h3>Auge de los editores "IA-first"</h3>
+          <p>Cursor y herramientas similares popularizan el flujo donde la IA conoce todo el repositorio. Claude 3.5 Sonnet se vuelve favorito para programar. La edición asistida se vuelve estándar.</p>
+          <span class="tag">Nuevos editores</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">12 sep 2024</span>
+          <h3>OpenAI o1: modelos que "razonan"</h3>
+          <p>Cadena de pensamiento explícita antes de responder. Mejora la resolución de problemas complejos y sienta la base de los agentes que planifican varios pasos.</p>
+          <span class="tag">Razonamiento</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">oct 2024</span>
+          <h3>Copilot se vuelve multiproveedor</h3>
+          <p>GitHub abre Copilot a varios modelos (Anthropic, Google, OpenAI). El modelo deja de ser el diferenciador único: importan la integración y el flujo de trabajo.</p>
+          <span class="tag">Independencia del modelo</span>
+        </div>
+      </article>
+
+      <!-- ================= 2025 ================= -->
+      <div class="year"><span class="epoch-year">2025</span><span class="epoch-sub">La era agéntica</span></div>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">20 ene 2025</span>
+          <h3>DeepSeek R1 sacude el mercado</h3>
+          <p>Un modelo de razonamiento abierto y muy económico demuestra que la frontera no es exclusiva de unos pocos laboratorios. Presiona a la baja los precios de la IA para todos.</p>
+          <span class="tag">Apertura y costes</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">feb 2025</span>
+          <h3>Claude 3.7 Sonnet y los "modos de agente"</h3>
+          <p>Razonamiento híbrido (respuesta rápida o pensada) y modo agente en Copilot. La IA empieza a trabajar con herramientas, terminal y múltiples archivos de forma autónoma.</p>
+          <span class="tag">Agentic coding</span>
+        </div>
+      </article>
+
+      <article class="item paradigm">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">feb 2025</span>
+          <h3>Nace el término "vibe coding"</h3>
+          <p>Se populariza la idea de programar describiendo en lenguaje natural lo que se quiere. Cambia el perfil de quién puede construir software… y abre el debate sobre calidad y comprensión del código.</p>
+          <span class="tag">Nuevo paradigma</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">abr 2025</span>
+          <h3>GPT-4.1 y la familia o3 / o4-mini</h3>
+          <p>Modelos optimizados para código, instrucciones largas y uso de herramientas. La mezcla "modelo rápido + modelo que razona" se vuelve la arquitectura estándar de los asistentes.</p>
+          <span class="tag">Tool use</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">22 may 2025</span>
+          <h3>Claude 4 (Opus y Sonnet)</h3>
+          <p>Enfocados en código, razonamiento con herramientas y flujos prolongados. Los agentes de programación pasan de demostración a herramienta de producción.</p>
+          <span class="tag">Producción agéntica</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">may 2025</span>
+          <h3>Conferencias: la IA como plataforma</h3>
+          <p>Google I/O y Microsoft Build giran en torno a agentes, MCP (Model Context Protocol) y desarrollo asistido. Las grandes nubes integran la IA en toda la cadena de despliegue.</p>
+          <span class="tag">Ecosistema</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">jun–sep 2025</span>
+          <h3>Claude Code, Gemini CLI y agentes en terminal</h3>
+          <p>Los asistentes de línea de comandos se generalizan: leen el repositorio, ejecutan pruebas, hacen commits y proponen cambios. El "pair programming" se convierte en "delegación".</p>
+          <span class="tag">CLI y automatización</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">ago 2025</span>
+          <h3>GPT-5</h3>
+          <p>Razonamiento adaptativo y enrutamiento interno de modelos. Menos alucinaciones y mejor desempeño en tareas largas de ingeniería. Base para agentes que trabajan solos durante horas.</p>
+          <span class="tag">Frontera</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">sep 2025</span>
+          <h3>Claude Sonnet 4.5 y el Agent SDK</h3>
+          <p>Modelo centrado en agentes y uso de computadora, junto a un SDK para construir agentes. La industria adopta MCP como estándar para conectar la IA con datos y herramientas.</p>
+          <span class="tag">Estándar de agentes</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">nov 2025</span>
+          <h3>GPT-5.1, Gemini 3 y Claude Opus 4.5</h3>
+          <p>Competencia máxima entre proveedores: contexto enorme, razonamiento avanzado y agentes de larga duración, a precios cada vez menores. La frontera se mueve cada pocas semanas.</p>
+          <span class="tag">Carrera de la frontera</span>
+        </div>
+      </article>
+
+      <!-- ================= 2026 ================= -->
+      <div class="year"><span class="epoch-year">2026</span><span class="epoch-sub">Delegación y madurez</span></div>
+
+      <article class="item paradigm">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">2026</span>
+          <h3>De "asistir" a "delegar"</h3>
+          <p>Los flujos agénticos se vuelven la norma: el equipo define objetivos, contexto y restricciones, y los agentes ejecutan tareas completas (leer el código, planificar, modificar varios archivos, correr pruebas e iterar).</p>
+          <span class="tag">Cambio de paradigma</span>
+        </div>
+      </article>
+
+      <article class="item tool">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">2026</span>
+          <h3>Multi-agente y orquestación</h3>
+          <p>Los desarrolladores combinan varias herramientas a la vez (editor + agente de terminal + asistente de revisión + IDE). Aparecen equipos de agentes especializados que colaboran en una misma tarea.</p>
+          <span class="tag">Orquestación</span>
+        </div>
+      </article>
+
+      <article class="item hit">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">2026</span>
+          <h3>Modelos que superan umbrales de ingeniería real</h3>
+          <p>Las nuevas generaciones (GPT-5.x, Claude 4.6/4.7/5, Gemini 3.x y modelos abiertos potentes) superan en benchmarks de ingeniería de software el rendimiento humano de referencia en tareas acotadas. El benchmark pasa a guiar decisiones de compra.</p>
+          <span class="tag">Capacidad medida</span>
+        </div>
+      </article>
+
+      <article class="item paradigm">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">2026</span>
+          <h3>Desarrollo guiado por especificaciones (SDD)</h3>
+          <p>Crece el "spec-driven development": primero una especificación clara y validable; luego el agente implementa. El rol se corre hacia definir bien el problema, los contratos y las pruebas.</p>
+          <span class="tag">Metodología</span>
+        </div>
+      </article>
+
+      <article class="item job">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">2026</span>
+          <h3>Del "10x" al ingeniero que orquesta</h3>
+          <p>El valor no está en teclear rápido, sino en coordinar agentes, validar resultados y tomar decisiones de arquitectura. Se demandan perfiles que sepan <strong>revisar</strong> y <strong>asegurar</strong> código generado por IA.</p>
+          <span class="tag">Nuevo perfil</span>
+        </div>
+      </article>
+
+      <article class="item job">
+        <div class="node"></div>
+        <div class="card">
+          <span class="date">hoy · oct 2026</span>
+          <h3>La IA es infraestructura, no un experimento</h3>
+          <p>La mayoría de los desarrolladores usa asistencia de IA a diario y una parte creciente del código nuevo se genera con IA bajo supervisión. El reto ya no es <em>adoptar</em> la herramienta, sino gobernar bien la calidad, el coste y la seguridad.</p>
+          <span class="tag">Estado actual</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ ANTES VS AHORA ============ -->
+  <section id="antes-ahora">
+    <h2 class="section-title">Antes vs. Ahora</h2>
+    <p class="section-sub">Qué cambió concretamente en el día a día del desarrollador y del ingeniero de sistemas.</p>
+    <div class="compare">
+      <table>
+        <thead>
+          <tr>
+            <th>Dimensión</th>
+            <th>Antes de ChatGPT (2022)</th>
+            <th>Hoy (2026)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="dim">Escribir código</td>
+            <td>Manual, línea por línea, con autocompletado básico.</td>
+            <td class="now">Se delega a agentes; el humano revisa, ajusta y aprueba.</td>
+          </tr>
+          <tr>
+            <td class="dim">Búsqueda de soluciones</td>
+            <td>Google + Stack Overflow + documentación.</td>
+            <td class="now">Asistente conversacional con contexto del propio repositorio.</td>
+          </tr>
+          <tr>
+            <td class="dim">Depuración</td>
+            <td>Inspección manual, logs, prueba y error.</td>
+            <td class="now">La IA explica el error, propone la causa y ejecuta la corrección.</td>
+          </tr>
+          <tr>
+            <td class="dim">Revisión de código</td>
+            <td>Compañeros revisan cada pull request a mano.</td>
+            <td class="now">La IA hace una primera revisión; el humano valida lo importante.</td>
+          </tr>
+          <tr>
+            <td class="dim">Pruebas</td>
+            <td>Se escriben según el tiempo disponible.</td>
+            <td class="now">Se generan y ejecutan de forma casi automática dentro del flujo del agente.</td>
+          </tr>
+          <tr>
+            <td class="dim">Rol principal</td>
+            <td>Implementador: saber lenguajes, frameworks y síndromes de sintaxis.</td>
+            <td class="now">Arquitecto y verificador: saber diseñar, integrar, juzgar y asegurar.</td>
+          </tr>
+          <tr>
+            <td class="dim">Infraestructura / operaciones</td>
+            <td>Scripts, runbooks y automatización clásica.</td>
+            <td class="now">Agentes que diagnostican incidentes, leen logs y proponen cambios en IaC.</td>
+          </tr>
+          <tr>
+            <td class="dim">Productividad</td>
+            <td>Medida en líneas y horas.</td>
+            <td class="now">Medida en resultados entregados y fiabilidad del sistema.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <span class="note-label">Matiz importante</span> más velocidad no significa automáticamente mejor software. La deuda técnica, las vulnerabilidades y las alucinaciones en código generado obligan a que el juicio humano siga siendo el último filtro.
+    </div>
+  </section>
+
+  <!-- ============ DATOS ============ -->
+  <section id="datos">
+    <h2 class="section-title">Cifras que marcan el cambio</h2>
+    <p class="section-sub">Indicadores representativos del giro de la profesión entre 2022 y 2026.</p>
+    <div class="stats">
+      <div class="stat"><div class="num">100M</div><div class="lbl">usuarios de ChatGPT en sus primeros 2 meses (2023), el crecimiento de adopción más rápido registrado hasta entonces.</div></div>
+      <div class="stat"><div class="num">≈90%</div><div class="lbl">de desarrolladores en EE. UU. usa herramientas de IA a diario en su flujo de trabajo (2026).</div></div>
+      <div class="stat"><div class="num">2–3</div><div class="lbl">herramientas de IA por desarrollador en su flujo habitual: editor + agente + revisor.</div></div>
+      <div class="stat"><div class="num">1M</div><div class="lbl">tokens de contexto en los modelos actuales: una base de código completa de una sola vez.</div></div>
+      <div class="stat"><div class="num">80%+</div><div class="lbl">de tareas resueltas de forma autónoma por los mejores agentes en benchmarks de ingeniería real.</div></div>
+      <div class="stat"><div class="num">2026</div><div class="lbl">año en que la delegación a agentes se volvió práctica estándar, no novedad.</div></div>
+    </div>
+    <p class="section-sub" style="margin-top:18px;font-size:.8rem;">Las cifras son aproximadas y buscan ilustrar la tendencia; el ritmo de cambio hace que se actualicen con frecuencia.</p>
+  </section>
+
+  <!-- ============ HABILIDADES ============ -->
+  <section id="habilidades">
+    <h2 class="section-title">Las habilidades que ganaron y perdieron peso</h2>
+    <p class="section-sub">Qué dejó de ser ventaja competitiva y qué se volvió indispensable.</p>
+    <div class="skills">
+      <div class="skill">
+        <h4>Ganan peso</h4>
+        <ul>
+          <li>Diseño de arquitectura y de sistemas.</li>
+          <li>Ingeniería de prompts y de contexto.</li>
+          <li>Revisión crítica de código generado por IA.</li>
+          <li>Seguridad, privacidad y cumplimiento.</li>
+          <li>Orquestación de agentes y automatización.</li>
+          <li>Especificar bien problemas y contratos (SDD).</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h4>Pierden peso</h4>
+        <ul>
+          <li>Memorizar sintaxis y APIs.</li>
+          <li>Escribir código repetitivo a mano.</li>
+          <li>Buscar en foros la solución trivial.</li>
+          <li>Tareas de "traducción" de requisitos a boilerplate.</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h4>Siguen siendo clave</h4>
+        <ul>
+          <li>Modelado de datos y algoritmos.</li>
+          <li>Fundamentos de sistemas, redes y rendimiento.</li>
+          <li>Comunicación y trabajo en equipo.</li>
+          <li>Criterio para decidir qué vale la pena construir.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RIESGOS ============ -->
+  <section id="riesgos">
+    <h2 class="section-title">Los riesgos que no desaparecen</h2>
+    <div class="skills">
+      <div class="skill">
+        <h4>Calidad y seguridad</h4>
+        <ul>
+          <li>Vulnerabilidades introducidas por código generado sin revisión.</li>
+          <li>Alucinaciones: APIs o comportamientos que no existen.</li>
+          <li>Deuda técnica silenciosa y difícil de rastrear.</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h4>Habilidad humana</h4>
+        <ul>
+          <li>Riesgo de atrofiar fundamentos por sobre-dependencia.</li>
+          <li>Menos comprensión profunda del código propio.</li>
+          <li>Presión sobre perfiles junior y de entrada.</li>
+        </ul>
+      </div>
+      <div class="skill">
+        <h4>Coste y gobernanza</h4>
+        <ul>
+          <li>Coste de tokens a escala y dependencia de proveedores.</li>
+          <li>Privacidad de datos y propiedad intelectual del código.</li>
+          <li>Necesidad de políticas claras de uso de IA en la empresa.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FUTURO ============ -->
+  <section id="futuro">
+    <h2 class="section-title">El rol del desarrollador y del ingeniero en 2026</h2>
+    <p class="section-sub">De dónde venimos y hacia dónde apunta la profesión.</p>
+    <div class="callout">
+      <strong>2022:</strong> el desarrollador escribía. <strong>2026:</strong> el desarrollador define el problema, diseña la solución, orquesta agentes y responde por la calidad. La IA cubre lo repetitivo; el criterio humano cubre lo que importa.
+    </div>
+    <p>El ingeniero de sistemas, en particular, pasó de ser quien configura servidores y despliega a mano, a ser quien <strong>diseña plataformas y guardarraíles</strong> para que la IA trabaje de forma segura: límites de acceso, revisión obligatoria, observabilidad, control de costes y trazabilidad de lo que el agente hizo y por qué.</p>
+    <div class="callout warn">
+      <span class="note-label">Conclusión abierta</span> la tecnología cambió en meses; las profesiones, en años. Quienes integraron la IA como una herramienta más —manteniendo fundamentos fuertes y juicio crítico— son quienes están capitalizando el cambio. La ventaja competitiva ya no es saber escribir código más rápido, sino saber <em>decidir qué código vale la pena y por qué</em>.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  Línea de tiempo elaborada como documento de referencia (2022–2026) · Actualizado el 13 de octubre de 2026
+  <br>Los hechos posteriores a 2025 corresponden a un panorama tecnológico en rápida evolución.
+</footer>
+
+
+</body>
+</html>
